@@ -13,7 +13,7 @@ class Blog extends AbstractController
         }
 
         $messages = Message::getList();
-        // $users = [];
+        
         if ($messages) {
             $userIds = array_map(function (Message $message) {
                 return $message->getAuthorId();
