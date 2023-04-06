@@ -20,9 +20,15 @@ class Application
             $controller = $this->route->getController();
             $action = $this->route->getAction();
             $controller->setView($view);
+            $session = new Session();
+            $session->init();
+            $controller->setSession($session);
+            $controller->preDispatch();
             $result = $controller->$action();
 
             echo $result;
+        } catch (RedirectException $e) {
+            header('Location: ' . $e->getUrl());
         } catch (Error404Exception $e) {
             header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found', true, 404);
             echo 'Page not found';

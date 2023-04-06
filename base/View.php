@@ -18,7 +18,7 @@ class View
 
     public function __get($name)
     {
-        $this->data[$name];
+        return $this->data[$name];
     }
 
     public function render(string $tpl, $data = []): string

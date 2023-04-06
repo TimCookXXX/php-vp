@@ -8,12 +8,36 @@ class Login extends AbstractController
 {
     public function index()
     {
+        if ($this->getUser()) {
+            $this->redirect('/blog');
+        }
         return $this->view->render(
             'login.phtml',
             [
-                'title' => 'Регистрация'
+                'title' => 'Главная',
+                'user' => $this->getUser()
             ]
         );
+    }
+
+    public function auth() 
+    {
+        $email = (string) $_POST['email'];
+        $password = (string) $_POST['password'];
+
+        $user = User::getByEmail($email);
+
+        if (!$user) {
+            return 'Не правильный логин или пароль';
+        }
+
+        if ($user->getPassword() !== User::getPasswordHash($password)) {
+            return 'Не правильный логин или пароль';
+        }
+
+        $this->session->authUser($user->getId());
+
+        $this->redirect('/blog');
     }
 
     public function register()
@@ -32,7 +56,7 @@ class Login extends AbstractController
         }
 
         if ($password !== $password2) {
-            return 'Введенные пароли не совпадают';
+            return 'Пароли не совпадают';
         }
 
         if (mb_strlen($password) < 5) {
@@ -49,6 +73,7 @@ class Login extends AbstractController
         $user = new User($userData);
         $user->save();
 
-        return 'Вы успешно зарегистрировались';
+        $this->session->authUser($user->getId());
+        $this->redirect('/blog');
     }
 }
