@@ -54,7 +54,7 @@ class Message
         return $res;
     }
 
-    public static function getUserMessages(int $userId, int $limit): array 
+    public static function getUserMessages(int $userId, int $limit): array
     {
         $db = Db::getInstance();
         $data = $db->fetchAll(
@@ -76,13 +76,14 @@ class Message
         return $messages;
     }
 
-    public static function getList(int $limit = 10, int $offset = 0): array 
+    public static function getList(int $limit = 20, int $offset = 0): array
     {
         $db = Db::getInstance();
         $data = $db->fetchAll(
-            "SELECT * FROM messages LIMIT $limit OFFSET $offset",
+            "SELECT * FROM messages ORDER BY created_at DESC LIMIT $limit OFFSET $offset",
             __METHOD__
         );
+        
         if (!$data) {
             return [];
         }
